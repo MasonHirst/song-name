@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
+import { Route, Routes, Navigate } from 'react-router-dom'
+import RequestPage from './components/request-view/RequestPage'
+import DjPage from './components/dj-view/DjPage'
+import { DjContextWrapper } from './context/DjContext'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Routes>
+        <Route path='/request' element={<RequestPage />} />
+        <Route
+          path='/dj-portal'
+          element={
+            <DjContextWrapper>
+              <DjPage />
+            </DjContextWrapper>
+          }
+        />
+        <Route path='*' element={<Navigate to='/request' />} />
+      </Routes>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
