@@ -49,7 +49,6 @@ const RequestPage = () => {
     setRequestReasonError('')
 
     if (requestLimitReached) {
-      console.log('Request limit has been reached!')
       activatePleaseWaitModal()
       return
     }
@@ -87,7 +86,7 @@ const RequestPage = () => {
       axios
         .post(`${baseUrl}/api/request-song`, reqBody)
         .then(({ data }) => {
-          if (data.message === 'too-many-requests-please-wait') {
+          if (data.message === 'please-wait-before-requesting') {
             handleTooManyRequestsResponse()
           } else {
             _resetFields()
@@ -140,6 +139,7 @@ const RequestPage = () => {
     // HTML stuff goes here
     <div>
       <Typography variant='h4'>Request a song!</Typography>
+      <Typography variant='caption'>You may request up to 3 times within 5 minutes</Typography>
       <form
         style={{
           marginTop: '40px',

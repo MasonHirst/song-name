@@ -53,6 +53,7 @@ export function DjContextWrapper({ children }) {
         page,
         setPage,
         rowsPerPage,
+        setRowsPerPage
       }}
     >
       {children}

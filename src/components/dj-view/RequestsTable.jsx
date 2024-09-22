@@ -8,9 +8,11 @@ import {
   TableRow,
   Paper,
   TablePagination,
+  Link,
 } from '@mui/material'
 import TableRowActions from './TableRowActions'
 import { DjContext } from '../../context/DjContext'
+import { useEffect } from 'react'
 
 const RequestsTable = () => {
   const {
@@ -21,7 +23,8 @@ const RequestsTable = () => {
     setPage,
     songFetchLoading,
     timeRange,
-  }  = useContext(DjContext)
+  } = useContext(DjContext)
+  const [requestCountById, setRequestCountById] = useState({})
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
@@ -31,6 +34,16 @@ const RequestsTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
+
+  useEffect(() => {
+    setRequestCountById(
+      songRequests.reduce((acc, request) => {
+        acc[request.requester_client_id] =
+          (acc[request.requester_client_id] || 0) + 1
+        return acc
+      }, {})
+    )
+  }, [songRequests])
 
   // Get the data for the current page
   const paginatedData = songRequests.slice(
@@ -64,6 +77,10 @@ const RequestsTable = () => {
     )
   }
 
+  function handleClientIdClick(clientId) {
+    console.log(clientId)
+  }
+
   return (
     <Paper>
       <TableContainer
@@ -80,6 +97,7 @@ const RequestsTable = () => {
               <TableCell className='table-header-cell'>Artist</TableCell>
               <TableCell className='table-header-cell'>Reason</TableCell>
               <TableCell className='table-header-cell'>Time</TableCell>
+              <TableCell className='table-header-cell'>Client</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -95,11 +113,21 @@ const RequestsTable = () => {
                     {request.request_reason}
                   </TableCell>
                   <TableCell>{formatTime(request.createdAt)}</TableCell>
+                  <TableCell>
+                    <Link
+                      onClick={() =>
+                        handleClientIdClick(request.requester_client_id)
+                      }
+                    >
+                      {request.requester_client_id}
+                    </Link>
+                    ({requestCountById[request.requester_client_id]})
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} align='center'>
+                <TableCell colSpan={6} align='center'>
                   {songFetchLoading
                     ? 'Loading song requests...'
                     : timeRange === 'all'
